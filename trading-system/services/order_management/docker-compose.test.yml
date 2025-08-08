@@ -1,0 +1,64 @@
+# version: '3.8'
+
+services:
+  # Redis for session management (essential for Telegram bot)
+  redis:
+    image: redis:7-alpine
+    container_name: fc-trading-redis-test
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - fc-trading-test-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+  # Main FastAPI application
+  fc-trading-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: fc-trading-api-test
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - WORKERS=1
+      - REDIS_URL=redis://redis:6379
+      - LOG_LEVEL=INFO
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - fc-trading-test-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  fc-trading-test-network:
+    driver: bridge

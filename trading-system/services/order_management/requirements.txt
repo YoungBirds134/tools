@@ -1,0 +1,68 @@
+# Order Management Service Dependencies - Production Ready
+
+# FastAPI and ASGI server
+fastapi==0.115.13
+uvicorn[standard]==0.34.0
+gunicorn==23.0.0
+
+# Pydantic for data validation and settings
+pydantic==2.10.4
+pydantic-settings==2.7.0
+
+# HTTP client for API calls
+httpx==0.28.1
+aiohttp==3.11.11
+
+# Authentication and security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.17
+
+# Database (PostgreSQL)
+psycopg2-binary==2.9.10
+asyncpg==0.29.0
+sqlalchemy==2.0.36
+alembic==1.14.0
+
+# Redis for caching and session
+redis==5.2.0
+aioredis==2.0.1
+hiredis==3.1.0
+
+# Message broker (Kafka)
+aiokafka==0.11.0
+kafka-python==2.0.2
+
+# Monitoring and logging
+prometheus-client==0.19.0
+structlog==23.2.0
+
+# Environment and configuration
+python-dotenv==1.0.0
+
+# Development and testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+httpx==0.25.2
+black==23.11.0
+isort==5.12.0
+flake8==6.1.0
+mypy==1.7.1
+
+# API documentation
+mkdocs==1.5.3
+mkdocs-material==9.4.8
+
+# Timezone handling
+pytz==2023.3
+
+# JSON processing
+orjson==3.9.10
+
+# Utilities
+python-slugify==8.0.1
+email-validator==2.1.0
+
+# Cryptography for SSI FastConnect
+cryptography==41.0.7

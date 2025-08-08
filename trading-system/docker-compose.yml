@@ -1,0 +1,408 @@
+version: '3.8'
+
+services:
+  # API Gateway
+  nginx:
+    image: nginx:alpine
+    container_name: trading-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./infrastructure/nginx/conf.d:/etc/nginx/conf.d
+      - ./infrastructure/ssl:/etc/nginx/ssl
+    depends_on:
+      - portal-service
+      - sso-service
+      - sso-ui-service
+    networks:
+      - trading-network
+
+  # Databases
+  postgres:
+    image: postgres:15-alpine
+    container_name: trading-postgres
+    environment:
+      POSTGRES_DB: trading_system
+      POSTGRES_USER: trading_user
+      POSTGRES_PASSWORD: trading_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - trading-network
+
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    container_name: trading-timescaledb
+    environment:
+      POSTGRES_DB: trading_timeseries
+      POSTGRES_USER: trading_user
+      POSTGRES_PASSWORD: trading_password
+    volumes:
+      - timescaledb_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - trading-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: trading-redis
+    command: redis-server --appendonly yes --requirepass redis_password
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - trading-network
+
+  # Message Broker
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: trading-kafka
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    networks:
+      - trading-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: trading-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - trading-network
+
+  # Core Services
+  config-service:
+    build:
+      context: ./services/config_service
+      dockerfile: Dockerfile
+    container_name: trading-config-service
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql://trading_user:trading_password@postgres:5432/trading_system
+      - REDIS_URL=redis://:redis_password@redis:6379/0
+    ports:
+      - "8001:8000"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - trading-network
+
+  sso-service:
+    build:
+      context: ./services/sso_service
+      dockerfile: Dockerfile
+    container_name: trading-sso-service
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql://trading_user:trading_password@postgres:5432/trading_system
+      - REDIS_URL=redis://:redis_password@redis:6379/0
+    ports:
+      - "8002:8000"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - trading-network
+
+  sso-ui-service:
+    build:
+      context: ./services/sso_ui_service
+      dockerfile: Dockerfile
+    container_name: trading-sso-ui-service
+    environment:
+      - ENVIRONMENT=development
+      - SSO_SERVICE_URL=http://sso-service:8000
+    ports:
+      - "8003:80"
+    depends_on:
+      - sso-service
+    networks:
+      - trading-network
+
+  portal-service:
+    build:
+      context: ./services/portal_service
+      dockerfile: Dockerfile
+    container_name: trading-portal-service
+    environment:
+      - ENVIRONMENT=development
+      - SSO_SERVICE_URL=http://sso-service:8000
+      - ORDER_MANAGEMENT_URL=http://order-management:8000
+      - MASTER_DATA_URL=http://master-data:8000
+    ports:
+      - "8004:80"
+    depends_on:
+      - sso-service
+      - order-management
+      - master-data
+    networks:
+      - trading-network
+
+  # Data Services
+  market-data-ingestion:
+    build:
+      context: ./services/market_data_ingestion
+      dockerfile: Dockerfile
+    container_name: trading-market-data-ingestion
+    environment:
+      - ENVIRONMENT=development
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - TIMESCALEDB_URL=postgresql://trading_user:trading_password@timescaledb:5432/trading_timeseries
+      - CONFIG_SERVICE_URL=http://config-service:8000
+    depends_on:
+      - kafka
+      - timescaledb
+      - config-service
+    networks:
+      - trading-network
+
+  historical-data:
+    build:
+      context: ./services/historical_data
+      dockerfile: Dockerfile
+    container_name: trading-historical-data
+    environment:
+      - ENVIRONMENT=development
+      - TIMESCALEDB_URL=postgresql://trading_user:trading_password@timescaledb:5432/trading_timeseries
+      - CONFIG_SERVICE_URL=http://config-service:8000
+    ports:
+      - "8005:8000"
+    depends_on:
+      - timescaledb
+      - config-service
+    networks:
+      - trading-network
+
+  master-data:
+    build:
+      context: ./services/master_data
+      dockerfile: Dockerfile
+    container_name: trading-master-data
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql://trading_user:trading_password@postgres:5432/trading_system
+      - REDIS_URL=redis://:redis_password@redis:6379/0
+      - CONFIG_SERVICE_URL=http://config-service:8000
+    ports:
+      - "8006:8000"
+    depends_on:
+      - postgres
+      - redis
+      - config-service
+    networks:
+      - trading-network
+
+  # Trading Services
+  order-management:
+    build:
+      context: ./services/order_management
+      dockerfile: Dockerfile
+    container_name: trading-order-management
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql://trading_user:trading_password@postgres:5432/trading_system
+      - REDIS_URL=redis://:redis_password@redis:6379/0
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - CONFIG_SERVICE_URL=http://config-service:8000
+      - MASTER_DATA_URL=http://master-data:8000
+    ports:
+      - "8007:8000"
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+      - config-service
+      - master-data
+    networks:
+      - trading-network
+
+  technical-analysis:
+    build:
+      context: ./services/technical_analysis
+      dockerfile: Dockerfile
+    container_name: trading-technical-analysis
+    environment:
+      - ENVIRONMENT=development
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - TIMESCALEDB_URL=postgresql://trading_user:trading_password@timescaledb:5432/trading_timeseries
+      - HISTORICAL_DATA_URL=http://historical-data:8000
+    ports:
+      - "8008:8000"
+    depends_on:
+      - kafka
+      - timescaledb
+      - historical-data
+    networks:
+      - trading-network
+
+  prediction-service:
+    build:
+      context: ./services/prediction_service
+      dockerfile: Dockerfile
+    container_name: trading-prediction-service
+    environment:
+      - ENVIRONMENT=development
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - TIMESCALEDB_URL=postgresql://trading_user:trading_password@timescaledb:5432/trading_timeseries
+      - TECHNICAL_ANALYSIS_URL=http://technical-analysis:8000
+    ports:
+      - "8009:8000"
+    depends_on:
+      - kafka
+      - timescaledb
+      - technical-analysis
+    networks:
+      - trading-network
+
+  decision-engine:
+    build:
+      context: ./services/decision_engine
+      dockerfile: Dockerfile
+    container_name: trading-decision-engine
+    environment:
+      - ENVIRONMENT=development
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - ORDER_MANAGEMENT_URL=http://order-management:8000
+      - RISK_MANAGEMENT_URL=http://risk-management:8000
+      - RULE_SERVICE_URL=http://rule-service:8000
+    ports:
+      - "8010:8000"
+    depends_on:
+      - kafka
+      - order-management
+      - risk-management
+      - rule-service
+    networks:
+      - trading-network
+
+  risk-management:
+    build:
+      context: ./services/risk_management
+      dockerfile: Dockerfile
+    container_name: trading-risk-management
+    environment:
+      - ENVIRONMENT=development
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - DATABASE_URL=postgresql://trading_user:trading_password@postgres:5432/trading_system
+      - MASTER_DATA_URL=http://master-data:8000
+    ports:
+      - "8011:8000"
+    depends_on:
+      - kafka
+      - postgres
+      - master-data
+    networks:
+      - trading-network
+
+  rule-service:
+    build:
+      context: ./services/rule_service
+      dockerfile: Dockerfile
+    container_name: trading-rule-service
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql://trading_user:trading_password@postgres:5432/trading_system
+    ports:
+      - "8012:8000"
+    depends_on:
+      - postgres
+    networks:
+      - trading-network
+
+  # AI/ML Services
+  memory-llm-service:
+    build:
+      context: ./services/memory_llm_service
+      dockerfile: Dockerfile
+    container_name: trading-memory-llm-service
+    environment:
+      - ENVIRONMENT=development
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - REDIS_URL=redis://:redis_password@redis:6379/0
+    ports:
+      - "8013:8000"
+    depends_on:
+      - kafka
+      - redis
+    networks:
+      - trading-network
+
+  analyze-emotion-service:
+    build:
+      context: ./services/analyze_emotion_service
+      dockerfile: Dockerfile
+    container_name: trading-analyze-emotion-service
+    environment:
+      - ENVIRONMENT=development
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - MEMORY_LLM_URL=http://memory-llm-service:8000
+    ports:
+      - "8014:8000"
+    depends_on:
+      - kafka
+      - memory-llm-service
+    networks:
+      - trading-network
+
+  # Support Services
+  notification-service:
+    build:
+      context: ./services/notification_service
+      dockerfile: Dockerfile
+    container_name: trading-notification-service
+    environment:
+      - ENVIRONMENT=development
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - REDIS_URL=redis://:redis_password@redis:6379/0
+    ports:
+      - "8015:8000"
+    depends_on:
+      - kafka
+      - redis
+    networks:
+      - trading-network
+
+  logging-monitoring:
+    build:
+      context: ./services/logging_monitoring
+      dockerfile: Dockerfile
+    container_name: trading-logging-monitoring
+    environment:
+      - ENVIRONMENT=development
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - REDIS_URL=redis://:redis_password@redis:6379/0
+    ports:
+      - "8016:8000"
+    depends_on:
+      - kafka
+      - redis
+    networks:
+      - trading-network
+
+volumes:
+  postgres_data:
+  timescaledb_data:
+  redis_data:
+
+networks:
+  trading-network:
+    driver: bridge

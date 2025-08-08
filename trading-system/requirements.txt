@@ -1,0 +1,53 @@
+# Core FastAPI and Web Framework
+fastapi[standard]==0.115.13
+uvicorn[standard]==0.32.1
+gunicorn==23.0.0
+
+# Database and ORM
+sqlalchemy==2.0.36
+alembic==1.13.3
+psycopg2-binary==2.9.10
+redis==5.2.0
+
+# Data Processing and Analysis
+pandas==2.2.3
+numpy==1.26.4
+pydantic==2.10.3
+pydantic-settings==2.6.1
+
+# API and HTTP Clients
+httpx==0.28.1
+aiohttp==3.11.10
+websockets==14.1
+
+# Message Queue and Streaming
+kafka-python==2.0.2
+aiokafka==0.12.0
+
+# Security and Authentication
+cryptography==41.0.7
+
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.12
+
+# Monitoring and Logging
+prometheus-client==0.21.1
+loguru==0.7.2
+
+# Configuration and Environment
+python-dotenv==1.0.1
+
+# Date and Time
+pytz==2024.2
+
+# Testing (Development)
+pytest==8.3.4
+pytest-asyncio==0.24.0
+pytest-cov==6.0.0
+httpx==0.28.1
+
+# Development Tools
+black==24.10.0
+isort==5.13.2
+flake8==7.1.1
+mypy==1.13.0

@@ -1,0 +1,309 @@
+{
+  "total": 14,
+  "success": 14,
+  "failed": 0,
+  "details": [
+    {
+      "endpoint": "/fc-trading/orders?account=Q023951",
+      "description": "Get current orders",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.393s",
+      "response_size": 105,
+      "response_data": {
+        "message": "Success",
+        "status": 200,
+        "timestamp": "2025-07-21T06:52:36.010432",
+        "data": [],
+        "total_record": null
+      }
+    },
+    {
+      "endpoint": "/fc-trading/orders/history?account=Q023951&start_date=01/01/2025&end_date=21/01/2025",
+      "description": "Get order history",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.347s",
+      "response_size": 138,
+      "response_data": {
+        "message": "Date range restricted to within 7 days",
+        "status": 400,
+        "timestamp": "2025-07-21T06:52:36.859524",
+        "data": null,
+        "total_record": null
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/balance?account=Q023951",
+      "description": "Get account balance",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.393s",
+      "response_size": 207,
+      "response_data": {
+        "message": "Success",
+        "status": 200,
+        "timestamp": "2025-07-21T06:52:37.744578",
+        "data": {
+          "account": "Q023951",
+          "cash_balance": null,
+          "available_cash": null,
+          "debt_amount": null,
+          "advance_amount": null
+        },
+        "total_record": null
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/positions?account=Q023951",
+      "description": "Get stock positions",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.359s",
+      "response_size": 226,
+      "response_data": {
+        "message": "Success",
+        "status": 200,
+        "timestamp": "2025-07-21T06:52:38.604425",
+        "data": [
+          {
+            "account": "Q023951",
+            "instrument_id": null,
+            "quantity": null,
+            "available_quantity": null,
+            "avg_price": null,
+            "market_value": null
+          }
+        ],
+        "total_record": null
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/portfolio?account=Q023951",
+      "description": "Get portfolio summary",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.033s",
+      "response_size": 265,
+      "response_data": {
+        "message": "Success",
+        "status": 200,
+        "timestamp": "2025-07-21T06:52:38.604425",
+        "data": [
+          {
+            "account": "Q023951",
+            "instrument_id": null,
+            "qty": null,
+            "average_price": null,
+            "market_price": null,
+            "market_value": null,
+            "profit_loss": null,
+            "profit_loss_percent": null
+          }
+        ],
+        "total_record": null
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/max-buy-qty?account=Q023951&instrument_id=TPB&price=10000",
+      "description": "Get max buy quantity",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.334s",
+      "response_size": 212,
+      "response_data": {
+        "message": "Success",
+        "status": 200,
+        "timestamp": "2025-07-21T06:52:39.983595",
+        "data": {
+          "account": "Q023951",
+          "max_buy_qty": null,
+          "margin_ratio": null,
+          "purchasing_power": null,
+          "orig_margin_ratio": null
+        },
+        "total_record": null
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/max-sell-qty?account=Q023951&instrument_id=TPB",
+      "description": "Get max sell quantity",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.406s",
+      "response_size": 141,
+      "response_data": {
+        "message": "Success",
+        "status": 200,
+        "timestamp": "2025-07-21T06:52:40.892601",
+        "data": {
+          "account": "Q023951",
+          "maxSellQty": 159
+        },
+        "total_record": null
+      }
+    },
+    {
+      "endpoint": "/fc-trading/deriv/account/balance?account=Q023951",
+      "description": "Get derivative account balance",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.369s",
+      "response_size": 305,
+      "response_data": {
+        "message": "Success",
+        "status": 200,
+        "timestamp": "2025-07-21T06:52:41.762280",
+        "data": {
+          "account": null,
+          "account_balance": null,
+          "fee": null,
+          "commission": null,
+          "interest": null,
+          "loan": null,
+          "delivery_amount": null,
+          "margin_call": null,
+          "available_amount": null,
+          "margin_ratio": null,
+          "total_equity": null
+        },
+        "total_record": null
+      }
+    },
+    {
+      "endpoint": "/fc-trading/deriv/account/positions?account=Q023951",
+      "description": "Get derivative positions",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.321s",
+      "response_size": 118,
+      "response_data": {
+        "message": "Account not exist.",
+        "status": 400,
+        "timestamp": "2025-07-21T06:52:42.583524",
+        "data": null,
+        "total_record": null
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/audit-order-book?account=Q023951",
+      "description": "Get audit order book",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.371s",
+      "response_size": 105,
+      "response_data": {
+        "message": "Success",
+        "status": 200,
+        "timestamp": "2025-07-21T06:52:43.456297",
+        "data": [],
+        "total_record": null
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/deriv-balance?account=Q023951",
+      "description": "Get derivative balance (alternative)",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.363s",
+      "response_size": 305,
+      "response_data": {
+        "message": "Success",
+        "status": 200,
+        "timestamp": "2025-07-21T06:52:44.320680",
+        "data": {
+          "account": null,
+          "account_balance": null,
+          "fee": null,
+          "commission": null,
+          "interest": null,
+          "loan": null,
+          "delivery_amount": null,
+          "margin_call": null,
+          "available_amount": null,
+          "margin_ratio": null,
+          "total_equity": null
+        },
+        "total_record": null
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/ppmmr-account?account=Q023951",
+      "description": "Get PPMMR account info",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.390s",
+      "response_size": 184,
+      "response_data": {
+        "message": "Success",
+        "status": 200,
+        "timestamp": "2025-07-21T06:52:45.212189",
+        "data": {
+          "account": null,
+          "margin_ratio": null,
+          "margin_call": null,
+          "maintenance_margin": null
+        },
+        "total_record": null
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/deriv-position?account=Q023951",
+      "description": "Get derivative position (alternative)",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.277s",
+      "response_size": 118,
+      "response_data": {
+        "message": "Account not exist.",
+        "status": 400,
+        "timestamp": "2025-07-21T06:52:45.989925",
+        "data": null,
+        "total_record": null
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/rate-limit?account=Q023951",
+      "description": "Get rate limit information",
+      "method": "GET",
+      "status": "\u2705 PASS",
+      "status_code": 200,
+      "expected_status": 200,
+      "response_time": "0.360s",
+      "response_size": 105,
+      "response_data": {
+        "message": "Success",
+        "status": 200,
+        "timestamp": "2025-07-21T06:52:46.850540",
+        "data": [],
+        "total_record": null
+      }
+    }
+  ]
+}

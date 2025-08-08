@@ -1,0 +1,245 @@
+{
+  "total": 14,
+  "success": 0,
+  "failed": 14,
+  "details": [
+    {
+      "endpoint": "/fc-trading/orders?account=Q023951",
+      "description": "Get current orders",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.419s",
+      "response_size": 121,
+      "response_data": {
+        "detail": {
+          "message": "Order book retrieval failed: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    },
+    {
+      "endpoint": "/fc-trading/orders/history?account=Q023951&start_date=01/01/2025&end_date=21/01/2025",
+      "description": "Get order history",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.310s",
+      "response_size": 124,
+      "response_data": {
+        "detail": {
+          "message": "Order history retrieval failed: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/balance?account=Q023951",
+      "description": "Get account balance",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.307s",
+      "response_size": 126,
+      "response_data": {
+        "detail": {
+          "message": "Account balance retrieval failed: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/positions?account=Q023951",
+      "description": "Get stock positions",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.334s",
+      "response_size": 126,
+      "response_data": {
+        "detail": {
+          "message": "Stock positions retrieval failed: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/portfolio?account=Q023951",
+      "description": "Get portfolio summary",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.341s",
+      "response_size": 154,
+      "response_data": {
+        "detail": {
+          "message": "Portfolio retrieval failed: Stock positions retrieval failed: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/max-buy-qty?account=Q023951&instrument_id=TPB&price=10000",
+      "description": "Get max buy quantity",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.409s",
+      "response_size": 127,
+      "response_data": {
+        "detail": {
+          "message": "Max buy quantity retrieval failed: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/max-sell-qty?account=Q023951&instrument_id=TPB",
+      "description": "Get max sell quantity",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.311s",
+      "response_size": 128,
+      "response_data": {
+        "detail": {
+          "message": "Max sell quantity retrieval failed: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    },
+    {
+      "endpoint": "/fc-trading/deriv/account/balance?account=Q023951",
+      "description": "Get derivative account balance",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.353s",
+      "response_size": 134,
+      "response_data": {
+        "detail": {
+          "message": "Failed to get derivative account balance: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    },
+    {
+      "endpoint": "/fc-trading/deriv/account/positions?account=Q023951",
+      "description": "Get derivative positions",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.306s",
+      "response_size": 127,
+      "response_data": {
+        "detail": {
+          "message": "Failed to get derivative position: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/audit-order-book?account=Q023951",
+      "description": "Get audit order book",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.320s",
+      "response_size": 124,
+      "response_data": {
+        "detail": {
+          "message": "Failed to get audit order book: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/deriv-balance?account=Q023951",
+      "description": "Get derivative balance (alternative)",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.327s",
+      "response_size": 134,
+      "response_data": {
+        "detail": {
+          "message": "Failed to get derivative account balance: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/ppmmr-account?account=Q023951",
+      "description": "Get PPMMR account info",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.332s",
+      "response_size": 126,
+      "response_data": {
+        "detail": {
+          "message": "Failed to get PPMMR account info: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/deriv-position?account=Q023951",
+      "description": "Get derivative position (alternative)",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.366s",
+      "response_size": 127,
+      "response_data": {
+        "detail": {
+          "message": "Failed to get derivative position: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    },
+    {
+      "endpoint": "/fc-trading/account/rate-limit?account=Q023951",
+      "description": "Get rate limit information",
+      "method": "GET",
+      "status": "\u274c FAIL",
+      "status_code": 500,
+      "expected_status": 200,
+      "response_time": "0.302s",
+      "response_size": 123,
+      "response_data": {
+        "detail": {
+          "message": "Failed to get rate limit info: Authentication failed",
+          "error_code": "INTEGRATION_ERROR",
+          "details": {}
+        }
+      }
+    }
+  ]
+}

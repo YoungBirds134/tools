@@ -1,0 +1,96 @@
+[project]
+name = "trading-system"
+version = "0.1.0"
+description = "Quantum Trading System for Vietnamese Stock Market"
+authors = [
+    {name = "Trading System Team", email = "team@tradingsystem.com"}
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[standard]==0.115.13",
+    "uvicorn[standard]==0.32.1",
+    "gunicorn==23.0.0",
+    "sqlalchemy==2.0.36",
+    "alembic==1.13.3",
+    "psycopg2-binary==2.9.10",
+    "redis==5.2.0",
+    "pandas==2.2.3",
+    "numpy==1.26.4",
+    "pydantic==2.10.3",
+    "pydantic-settings==2.6.1",
+    "httpx==0.28.1",
+    "aiohttp==3.11.10",
+    "websockets==14.1",
+    "kafka-python==2.0.2",
+    "aiokafka==0.12.0",
+    "python-jose[cryptography]==3.3.0",
+    "passlib[bcrypt]==1.7.4",
+    "python-multipart==0.0.12",
+    "prometheus-client==0.21.1",
+    "loguru==0.7.2",
+    "python-dotenv==1.0.1",
+    "pytz==2024.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.4",
+    "pytest-asyncio==0.24.0",
+    "pytest-cov==6.0.0",
+    "black==24.10.0",
+    "isort==5.13.2",
+    "flake8==7.1.1",
+    "mypy==1.13.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["trading_system"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = [
+    "tests",
+]
